@@ -1,5 +1,5 @@
-import { createStore, startBatch, endBatch } from "@supergrain/core";
-import { tracked, For, provideStore, useComputed } from "@supergrain/react";
+import { batch, createReactive } from "@supergrain/kernel";
+import { For, tracked } from "@supergrain/kernel/react";
 import { useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
@@ -7,11 +7,6 @@ import { createRoot } from "react-dom/client";
 // --- Data Generation ---
 
 let idCounter = 1;
-
-/** Reset the ID counter (for testing only). */
-export function resetIdCounter() {
-  idCounter = 1;
-}
 
 const adjectives = [
   "pretty",
@@ -40,7 +35,19 @@ const adjectives = [
   "expensive",
   "fancy",
 ];
-const colours = ["red", "yellow", "blue", "green", "pink", "brown", "purple", "brown", "white", "black", "orange"];
+const colours = [
+  "red",
+  "yellow",
+  "blue",
+  "green",
+  "pink",
+  "brown",
+  "purple",
+  "brown",
+  "white",
+  "black",
+  "orange",
+];
 const nouns = [
   "table",
   "chair",
@@ -57,11 +64,11 @@ const nouns = [
   "keyboard",
 ];
 
-export function _random(max: number): number {
+function _random(max: number): number {
   return Math.round(Math.random() * 1000) % max;
 }
 
-export function buildData(count: number): RowData[] {
+function buildData(count: number): RowData[] {
   const data: RowData[] = new Array(count);
   for (let i = 0; i < count; i++) {
     data[i] = {
@@ -76,77 +83,90 @@ export function buildData(count: number): RowData[] {
 
 // --- TypeScript Definitions ---
 
-export interface RowData {
+interface RowData {
   id: number;
   label: string;
+  selected?: boolean;
 }
 
-export interface AppState {
+interface AppState {
   data: RowData[];
-  selected: number | null;
 }
 
-export interface RowProps {
+interface RowProps {
   item: RowData;
-  store: AppState;
-  onSelect: (id: number) => void;
+  onSelect: (item: RowData) => void;
   onRemove: (id: number) => void;
 }
 
-// --- Storable Implementation ---
+// --- Store ---
 
-const store = createStore<AppState>({
+const store = createReactive<AppState>({
   data: [],
-  selected: null,
 });
 
-const Store = provideStore(store);
+// Selection lives on the row itself (item.selected). Each Row subscribes only
+// to its own item's signal, so selecting writes exactly two signals (deselect
+// old, select new) instead of re-evaluating a derived value per row.
+let selectedRow: RowData | null = null;
 
-export const run = (count: number) => {
+const run = (count: number) => {
   store.data = buildData(count);
-  store.selected = null;
+  selectedRow = null;
 };
 
-export const add = () => {
+const add = () => {
   store.data.push(...buildData(1000));
 };
 
-export const update = () => {
-  startBatch();
-  for (let i = 0; i < store.data.length; i += 10) {
-    store.data[i].label = store.data[i].label + " !!!";
-  }
-  endBatch();
+const update = () => {
+  batch(() => {
+    for (let i = 0; i < store.data.length; i += 10) {
+      store.data[i].label = store.data[i].label + " !!!";
+    }
+  });
 };
 
-export const clear = () => {
-  startBatch();
-  store.data = [];
-  store.selected = null;
-  endBatch();
+const clear = () => {
+  batch(() => {
+    store.data = [];
+    selectedRow = null;
+  });
 };
 
-export const swapRows = () => {
+const swapRows = () => {
   if (store.data.length > 998) {
-    startBatch();
-    const row1 = store.data[1];
-    const row998 = store.data[998];
-    store.data[1] = row998;
-    store.data[998] = row1;
-    endBatch();
+    batch(() => {
+      const row1 = store.data[1];
+      const row998 = store.data[998];
+      store.data[1] = row998;
+      store.data[998] = row1;
+    });
   }
 };
 
-export const remove = (id: number) => {
+const remove = (id: number) => {
   const index = store.data.findIndex((item) => item.id === id);
   if (index !== -1) {
+    if (selectedRow && selectedRow.id === id) {
+      selectedRow = null;
+    }
     store.data.splice(index, 1);
   }
 };
 
-export const select = (id: number) => {
+const select = (item: RowData) => {
+  if (selectedRow && selectedRow.id === item.id) {
+    return;
+  }
   flushSync(() => {
-    store.selected = id;
+    batch(() => {
+      if (selectedRow) {
+        selectedRow.selected = false;
+      }
+      item.selected = true;
+      selectedRow = item;
+    });
   });
 };
 
@@ -160,28 +180,24 @@ const Button = ({ id, cb, title }: { id: string; cb: () => void; title: string }
   </div>
 );
 
-export const Row = tracked(({ item, store, onSelect, onRemove }: RowProps) => {
-  const id = item.id;
-  const isSelected = useComputed(() => store.selected === id);
-  return (
-    <tr className={isSelected ? "danger" : ""}>
-      <td className="col-md-1">{item.id}</td>
-      <td className="col-md-4">
-        <a onClick={() => onSelect(item.id)}>{item.label}</a>
-      </td>
-      <td className="col-md-1">
-        <a onClick={() => onRemove(item.id)}>
-          <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </a>
-      </td>
-      <td className="col-md-6"></td>
-    </tr>
-  );
-});
+const Row = tracked(({ item, onSelect, onRemove }: RowProps) => (
+  <tr className={item.selected ? "danger" : ""}>
+    <td className="col-md-1">{item.id}</td>
+    <td className="col-md-4">
+      <a onClick={() => onSelect(item)}>{item.label}</a>
+    </td>
+    <td className="col-md-1">
+      <a onClick={() => onRemove(item.id)}>
+        <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </a>
+    </td>
+    <td className="col-md-6"></td>
+  </tr>
+));
 
-export const App = tracked(() => {
+const App = tracked(() => {
   const tbodyRef = useRef<HTMLTableSectionElement>(null);
-  const handleSelect = useCallback((id: number) => select(id), []);
+  const handleSelect = useCallback((item: RowData) => select(item), []);
   const handleRemove = useCallback((id: number) => remove(id), []);
 
   return (
@@ -207,7 +223,7 @@ export const App = tracked(() => {
         <tbody ref={tbodyRef}>
           <For each={store.data} parent={tbodyRef}>
             {(item: RowData) => (
-              <Row key={item.id} item={item} store={store} onSelect={handleSelect} onRemove={handleRemove} />
+              <Row key={item.id} item={item} onSelect={handleSelect} onRemove={handleRemove} />
             )}
           </For>
         </tbody>
@@ -217,15 +233,7 @@ export const App = tracked(() => {
   );
 });
 
-// --- React Rendering ---
-if (typeof window !== "undefined") {
-  const container = document.getElementById("main");
-  if (container) {
-    const root = createRoot(container);
-    root.render(
-      <Store.Provider>
-        <App />
-      </Store.Provider>
-    );
-  }
+const container = document.getElementById("main");
+if (container) {
+  createRoot(container).render(<App />);
 }
