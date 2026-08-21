@@ -32,7 +32,7 @@
     "vitest": "^4.1.9"
   },
   "dependencies": {
-    "chromedriver": "150.0.1",
+    "chromedriver": "152.0.1",
     "cross-env": "10.1.0",
     "lighthouse": "13.4.0",
     "playwright": "1.61.1",
