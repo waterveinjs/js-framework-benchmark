@@ -29,6 +29,6 @@
   "devDependencies": {
     "@ripple-ts/vite-plugin": "0.3.112",
     "terser": "^5.46.1",
-    "vite": "^8.0.14"
+    "vite": "^8.1.6"
   }
 }
