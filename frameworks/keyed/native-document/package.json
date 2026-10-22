@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "native-document": "1.0.172",
-    "vite": "^8.0.5"
+    "vite": "^8.1.6"
   },
   "devDependencies": {
     "rollup-plugin-visualizer": "^7.0.1"
