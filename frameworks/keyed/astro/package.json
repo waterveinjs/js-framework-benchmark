@@ -12,7 +12,8 @@
       801,
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/withastro/astro"
   },
   "scripts": {
     "dev": "astro dev",

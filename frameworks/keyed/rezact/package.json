@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@rezact/rezact",
     "frameworkHomeURL": "https://rezact.io/",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/rezact/rezact"
   },
   "scripts": {
     "dev": "vite",

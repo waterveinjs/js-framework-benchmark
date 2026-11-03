@@ -11,7 +11,8 @@
     "customURL": "/bundled-dist",
     "frameworkVersion": "16.0.0",
     "frameworkHomeURL": "https://laminar.dev",
-    "language": "Scala"
+    "language": "Scala",
+    "repoURL": "https://github.com/raquo/Laminar"
   },
   "scripts": {
     "install": "echo This is a no-op. && echo Due to heavy dependencies, the generated javascript is already provided. && echo If you really want to build use: && echo npm run install-force",

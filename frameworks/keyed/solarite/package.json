@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersion": "0.8.0",
     "language": "JavaScript",
-    "frameworkHomeURL": "https://eric-frost.github.io/solarite/"
+    "frameworkHomeURL": "https://eric-frost.github.io/solarite/",
+    "repoURL": "https://github.com/eric-frost/solarite"
   },
   "scripts": {
     "build": "echo 0",

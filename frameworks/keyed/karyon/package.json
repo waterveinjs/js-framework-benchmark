@@ -7,7 +7,8 @@
     "issues": [
       801
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://gitlab.com/karyonjs/karyon"
   },
   "dependencies": {
     "karyon": "latest"

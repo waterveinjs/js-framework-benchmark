@@ -9,7 +9,8 @@
     "issues": [
       1139
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/omilli/hellajs"
   },
   "scripts": {
     "build-prod": "rollup -c rollup.config.mjs"

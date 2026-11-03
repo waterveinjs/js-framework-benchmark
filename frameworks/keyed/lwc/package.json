@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "lwc",
     "frameworkHomeURL": "https://lwc.dev/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/salesforce/lwc"
   },
   "scripts": {
     "dev": "rollup -c -w",

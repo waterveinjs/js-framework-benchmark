@@ -9,7 +9,8 @@
     "issues": [
       801
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/potahtml/pota"
   },
   "scripts": {
     "build-dev": "rollup -c -w",

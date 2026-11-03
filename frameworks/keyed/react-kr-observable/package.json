@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:kr-observable",
     "frameworkHomeURL": "https://www.npmjs.com/package/kr-observable",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/nihil-pro/kr-observable"
   },
   "scripts": {
     "dev": "rollup -c -w",

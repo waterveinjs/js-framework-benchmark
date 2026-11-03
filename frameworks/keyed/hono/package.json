@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "hono",
     "frameworkHomeURL": "https://hono.dev/",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/honojs/hono"
   },
   "scripts": {
     "build": "vite build",

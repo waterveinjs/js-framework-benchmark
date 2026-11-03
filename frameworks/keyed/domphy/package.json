@@ -8,7 +8,11 @@
     "frameworkVersionFromPackage": "@domphy/core",
     "frameworkHomeURL": "https://domphy.com/",
     "language": "TypeScript",
-    "issues": [1261, 1139]
+    "issues": [
+      1261,
+      1139
+    ],
+    "repoURL": "https://github.com/domphy/domphy"
   },
   "scripts": {
     "dev": "esbuild src/main.ts --bundle --format=iife --outfile=dist/main.js",

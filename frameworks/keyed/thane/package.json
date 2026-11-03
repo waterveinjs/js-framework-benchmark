@@ -7,9 +7,10 @@
   "type": "module",
   "js-framework-benchmark": {
     "customURL": "/dist/",
-    "frameworkVersion": "0.1.1",
+    "frameworkVersionFromPackage": "thane",
     "frameworkHomeURL": "https://github.com/timlouw/thane",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/timlouw/thane"
   },
   "scripts": {
     "build": "thane build --entry ./main.ts --out ./dist --assets ./assets --html ./index.html --base /frameworks/keyed/thane/dist/",
@@ -18,6 +19,6 @@
     "start-prod": "thane serve --prod --entry ./main.ts --out ./dist --assets ./assets --html ./index.html --base /frameworks/keyed/thane/dist/"
   },
   "dependencies": {
-    "thane": "^0.1.1"
+    "thane": "0.2.0"
   }
 }

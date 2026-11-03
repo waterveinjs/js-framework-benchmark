@@ -12,7 +12,8 @@
     "issues": [
       772
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/proposal-signals/signal-polyfill"
   },
   "scripts": {
     "dev": "exit 0",

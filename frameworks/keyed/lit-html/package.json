@@ -11,7 +11,8 @@
       800,
       801
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/lit/lit"
   },
   "scripts": {
     "dev": "rollup -c -w",

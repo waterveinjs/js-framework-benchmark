@@ -9,7 +9,8 @@
     "issues": [
       1139
     ],
-    "language": "c#"
+    "language": "c#",
+    "repoURL": "https://github.com/dotnet/aspnetcore"
   },
   "scripts": {
     "install": "echo This is a no-op. && echo Due to heavy dependencies, the generated javascript is already provided. && echo If you really want to clone reflex-dom\\'s benchmark and build system use: && echo npm run install-force",

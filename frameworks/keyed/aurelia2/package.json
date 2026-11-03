@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "aurelia",
     "customURL": "/dist",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/aurelia/aurelia"
   },
   "keywords": [
     "aurelia"

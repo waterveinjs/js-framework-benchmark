@@ -6,7 +6,8 @@
     "frameworkVersionFromPackage": "micra.js",
     "frameworkHomeURL": "https://denisfl.github.io/micra.js/",
     "language": "JavaScript",
-    "includeInBuild" : "node_modules/micra.js/dist/micra.min.js"
+    "includeInBuild": "node_modules/micra.js/dist/micra.min.js",
+    "repoURL": "https://github.com/denisfl/micra.js"
   },
   "scripts": {
     "dev": "exit 0",

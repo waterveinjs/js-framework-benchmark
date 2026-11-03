@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:react-tagged-state",
     "frameworkHomeURL": "https://github.com/oleggrishechkin/react-tagged-state",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/oleggrishechkin/react-tagged-state"
   },
   "scripts": {
     "dev": "webpack --watch",

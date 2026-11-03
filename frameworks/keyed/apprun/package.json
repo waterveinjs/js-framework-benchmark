@@ -9,7 +9,8 @@
     "issues": [
       801
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/yysun/apprun"
   },
   "scripts": {
     "dev": "esbuild src/main.tsx --bundle --outfile=dist/main.js --serve=8080 --servedir=.",

@@ -10,7 +10,8 @@
       800,
       801
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/luwes/sinuous"
   },
   "scripts": {
     "dev": "rollup -c -w",

@@ -14,7 +14,8 @@
     "issues": [
       1139
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/dmjio/miso"
   },
   "homepage": "https://github.com/krausest/js-framework-benchmark",
   "repository": {

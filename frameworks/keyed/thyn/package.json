@@ -8,7 +8,8 @@
     "frameworkHomeURL": "https://thyn.dev",
     "customURL": "/dist",
     "issues": [],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/thynjs/thyn"
   },
   "scripts": {
     "build-prod": "vite build"

@@ -7,7 +7,8 @@
     "frameworkVersionFromPackage": "vuact",
     "frameworkHomeURL": "https://www.npmjs.com/package/vuact",
     "customURL": "/dist",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/yinhangfeng/vuact"
   },
   "scripts": {
     "dev": "vite",

@@ -7,7 +7,8 @@
     "issues": [
       772
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/vanjs-org/van"
   },
   "scripts": {
     "dev": "bash bundle.sh && cp dist/bundle.js dist/bundle.out.js",

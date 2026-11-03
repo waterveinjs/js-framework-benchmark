@@ -3,7 +3,6 @@ import FrameworkSelector from "./FrameworkSelector";
 import IssueSelector from "./IssueSelector";
 import ModeSelectors from "./ModeSelectors";
 import CopyPasteControls from "./CopyPasteControls";
-import "./SelectionToolbar.css";
 
 interface Props {
   showDurationSelection: boolean;
@@ -13,17 +12,20 @@ const SelectionToolbar = ({ showDurationSelection }: Props) => {
   console.log("SelectionToolbar");
 
   return (
-    <div className="select-toolbar">
-      <div className="select-toolbar__actions">
-        <FrameworkSelector />
-        <BenchmarkSelector />
-        <IssueSelector />
+    <section className="toolbar" aria-label="Benchmark controls">
+      <div className="toolbar__filters">
+        <p className="toolbar-label">Filter results</p>
+        <div className="toolbar__actions">
+          <FrameworkSelector />
+          <BenchmarkSelector />
+          <IssueSelector />
+        </div>
       </div>
       <CopyPasteControls />
-      <div className="select-toolbar__actions">
+      <div className="toolbar__modes">
         <ModeSelectors showDurationSelection={showDurationSelection} />
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "svelte",
     "frameworkHomeURL": "https://svelte.dev/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/sveltejs/svelte"
   },
   "scripts": {
     "dev": "rollup -c -w",

@@ -1,0 +1,37 @@
+{
+  "name": "js-framework-benchmark-elur",
+  "version": "1.0.0",
+  "description": "Elur keyed demo for js-framework-benchmark",
+  "type": "module",
+  "js-framework-benchmark": {
+    "frameworkVersionFromPackage": "@elurjs/core",
+    "frameworkHomeURL": "https://www.elur.dev",
+    "customURL": "/dist",
+    "language": "TypeScript",
+    "repoURL": "https://github.com/elurjs/elur"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build-prod": "vite build",
+    "preview": "vite preview --port 8080 --strictPort",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@elurjs/core": "^3.5.1"
+  },
+  "devDependencies": {
+    "@elurjs/vite-plugin-elur": "^2.0.4",
+    "typescript": "^7.0.2",
+    "vite": "^7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krausest/js-framework-benchmark.git"
+  },
+  "author": "DeijoseDevelop",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krausest/js-framework-benchmark/issues"
+  },
+  "homepage": "https://github.com/krausest/js-framework-benchmark#readme"
+}

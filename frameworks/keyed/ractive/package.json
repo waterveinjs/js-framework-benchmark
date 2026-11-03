@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "ractive",
     "frameworkHomeURL": "https://ractive.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/ractivejs/ractive"
   },
   "scripts": {
     "dev": "webpack --watch",

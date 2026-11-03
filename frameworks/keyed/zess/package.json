@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@zessjs/core",
     "frameworkHomeURL": "https://rpsffx.github.io/zess/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/rpsffx/zess"
   },
   "scripts": {
     "dev": "vite",

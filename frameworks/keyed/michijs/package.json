@@ -9,7 +9,8 @@
     "useShadowRoot": false,
     "customURL": "/build",
     "includeInBuild": "build",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/michijs/michijs"
   },
   "scripts": {
     "start": "michi-server --start",

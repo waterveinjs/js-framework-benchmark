@@ -6,7 +6,8 @@
     "frameworkVersion": "2.4.1",
     "frameworkHomeURL": "https://github.com/L3P3/lui",
     "includeInBuild": "src",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/L3P3/lui"
   },
   "devDependencies": {
     "bun": "latest"

@@ -21,6 +21,7 @@
     "language": "TypeScript",
     "issues": [
       801
-    ]
+    ],
+    "repoURL": "https://github.com/brianwestphal/kerf"
   }
 }

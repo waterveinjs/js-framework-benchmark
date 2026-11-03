@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkHomeURL": "https://www.arrow-js.com/",
     "language": "JavaScript",
-    "frameworkVersionFromPackage": "@arrow-js/core"
+    "frameworkVersionFromPackage": "@arrow-js/core",
+    "repoURL": "https://github.com/standardagents/arrow-js"
   },
   "scripts": {
     "dev": "esbuild src/Main.js --bundle --format=esm --target=es2020 --outfile=dist/main.js --watch",

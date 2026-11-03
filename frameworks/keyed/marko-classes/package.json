@@ -8,7 +8,8 @@
     "issues": [
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/marko-js/marko"
   },
   "version": "1.0.0",
   "type": "module",

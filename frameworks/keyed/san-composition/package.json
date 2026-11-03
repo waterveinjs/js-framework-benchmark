@@ -8,7 +8,8 @@
     "issues": [
       800
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/baidu/san"
   },
   "scripts": {
     "dev": "webpack --watch",

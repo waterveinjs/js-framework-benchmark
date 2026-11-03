@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "solid-js",
     "frameworkHomeURL": "https://www.solidjs.com/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/solidjs/solid"
   },
   "scripts": {
     "dev": "rollup -c -w",

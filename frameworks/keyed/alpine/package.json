@@ -8,7 +8,8 @@
     "issues": [
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/alpinejs/alpine"
   },
   "type": "module",
   "scripts": {

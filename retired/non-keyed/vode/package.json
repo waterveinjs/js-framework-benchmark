@@ -1,0 +1,30 @@
+{
+  "name": "js-framework-benchmark-vode-non-keyed",
+  "version": "1.11.6",
+  "description": "non-keyed/vode",
+  "main": "main.mjs",
+  "js-framework-benchmark": {
+    "frameworkVersionFromPackage": "@ryupold/vode",
+    "frameworkHomeURL": "https://github.com/ryupold/vode",
+    "language": "JavaScript",
+    "repoURL": "https://github.com/ryupold/vode"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.1"
+  },
+  "allowScripts": {
+    "esbuild": true
+  },
+  "scripts": {
+    "build-prod": "npm run bundle",
+    "bundle": "esbuild src/main.ts --bundle --outfile=main.mjs --minify"
+  },
+  "keywords": [
+    "@ryupold/vode",
+    "vode"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@ryupold/vode": "1.11.6"
+  }
+}

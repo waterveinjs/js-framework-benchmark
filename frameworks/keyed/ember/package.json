@@ -29,7 +29,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "ember-source",
     "frameworkHomeURL": "https://emberjs.com/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/emberjs/ember.js"
   },
   "packageManager": "npm@8",
   "dependencies": {

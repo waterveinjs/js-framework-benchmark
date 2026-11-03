@@ -4,9 +4,10 @@
   "description": "Nuclo benchmark",
   "type": "module",
   "js-framework-benchmark": {
-    "frameworkVersion": "0.2.24",
+    "frameworkVersionFromPackage": "nuclo",
     "frameworkHomeURL": "https://nuclo.dev/",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/dan2dev/nuclo"
   },
   "scripts": {
     "dev": "node_modules/.bin/esbuild src/main.ts --bundle --outfile=dist/bundle.js --sourcemap",

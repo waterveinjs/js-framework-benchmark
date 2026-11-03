@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@aimwhy/frei",
     "frameworkHomeURL": "https://github.com/aimwhy/frei",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/aimwhy/frei"
   },
   "scripts": {
     "dev": "webpack --watch",

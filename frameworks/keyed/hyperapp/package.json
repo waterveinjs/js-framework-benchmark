@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "hyperapp",
     "frameworkHomeURL": "https://github.com/jorgebucaran/hyperapp",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/hyperapp/hyperapp"
   },
   "dependencies": {
     "hyperapp": "2.0.22"

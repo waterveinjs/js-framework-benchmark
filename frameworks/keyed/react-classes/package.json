@@ -7,7 +7,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react",
     "frameworkHomeURL": "https://www.reactjs.org",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/react/react"
   },
   "scripts": {
     "dev": "node esbuild.config.js --watch",

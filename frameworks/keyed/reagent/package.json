@@ -4,7 +4,8 @@
   "js-framework-benchmark": {
     "frameworkVersion": "0.10",
     "frameworkHomeURL": "https://reagent-project.github.io/",
-    "language": "ClojureScript"
+    "language": "ClojureScript",
+    "repoURL": "https://github.com/reagent-project/reagent"
   },
   "scripts": {
     "dev": "LEIN_VERSION=2.9.3 lein cljsbuild auto",

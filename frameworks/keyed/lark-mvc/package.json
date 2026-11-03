@@ -6,7 +6,8 @@
     "frameworkVersionFromPackage": "@lark.js/mvc",
     "frameworkHomeURL": "https://github.com/hangtiancheng/lark/tree/main/packages/lark-mvc",
     "customURL": "/dist",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/swifty-js/lark.js"
   },
   "type": "module",
   "scripts": {

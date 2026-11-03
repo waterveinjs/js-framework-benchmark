@@ -9,7 +9,8 @@
     "issues": [
       772
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/WebReflection/udomsay"
   },
   "scripts": {
     "dev": "rollup -c -w",

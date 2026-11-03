@@ -7,7 +7,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@b9g/crank",
     "frameworkHomeURL": "https://crank.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/bikeshaving/crank"
   },
   "scripts": {
     "dev": "CRANK_ENV=development rollup -c -w",

@@ -9,7 +9,8 @@
     "issues": [
       800
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/gr0uch/s2"
   },
   "scripts": {
     "dev": "echo 0",

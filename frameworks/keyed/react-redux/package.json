@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:react-redux",
     "frameworkHomeURL": "https://react-redux.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/reduxjs/redux"
   },
   "scripts": {
     "dev": "webpack --watch",

@@ -14,9 +14,12 @@
     "vite": "^5.4.10"
   },
   "js-framework-benchmark": {
-    "frameworkVersion": "0.1.0",
+    "frameworkVersionFromPackage": "plastron",
     "frameworkHomeURL": "https://github.com/rheophile10/plastron",
     "language": "typescript",
-    "issues": [1139]
+    "issues": [
+      1139
+    ],
+    "repoURL": "https://github.com/rheophile10/plastron"
   }
 }

@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "malinajs",
     "frameworkHomeURL": "https://www.npmjs.com/package/malinajs",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/malinajs/malinajs"
   },
   "scripts": {
     "dev": "rollup -c -w",

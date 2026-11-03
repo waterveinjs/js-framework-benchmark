@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react",
     "frameworkHomeURL": "https://reactjs.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/react/react"
   },
   "scripts": {
     "dev": "webpack --watch",

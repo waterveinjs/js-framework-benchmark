@@ -5,7 +5,8 @@
     "frameworkVersionFromPackage": "@openinula/next",
     "frameworkHomeURL": "https://www.openinula.net/",
     "customURL": "/dist",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://gitee.com/openInula/inula"
   },
   "type": "module",
   "scripts": {

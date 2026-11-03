@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@dark-engine/core",
     "frameworkHomeURL": "https://github.com/atellmer/dark",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/trycatch-labs/dark"
   },
   "scripts": {
     "dev": "npx webpack --watch",

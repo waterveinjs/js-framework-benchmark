@@ -1,0 +1,26 @@
+{
+  "name": "js-framework-benchmark-openui5",
+  "version": "1.0.0",
+  "description": "UI5 Benchmark",
+  "js-framework-benchmark": {
+    "frameworkVersion": "1.120.0",
+    "frameworkHomeURL": "https://openui5.org/",
+    "issues": [
+      1139
+    ],
+    "language": "JavaScript",
+    "repoURL": "https://github.com/UI5/openui5"
+  },
+  "scripts": {
+    "build-dev": "ui5 serve -o index.html",
+    "build-prod": "ui5 build self-contained --include-all-dependencies --clean-dest  && rimraf dist/test-resources"
+  },
+  "homepage": "https://github.com/krausest/js-framework-benchmark",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krausest/js-framework-benchmark.git"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^3"
+  }
+}

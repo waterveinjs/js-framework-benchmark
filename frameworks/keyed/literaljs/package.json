@@ -7,7 +7,8 @@
     "frameworkVersionFromPackage": "literaljs",
     "frameworkHomeURL": "https://literaljs.com/",
     "customURL": "/dist",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://gitlab.com/mikeysax/LiteralJS"
   },
   "scripts": {
     "build": "rollup -c && cp index.html dist/index.html && sed -i 's|dist/main.js|main.js|g' dist/index.html",

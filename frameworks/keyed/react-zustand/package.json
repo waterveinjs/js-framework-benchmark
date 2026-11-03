@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:zustand",
     "frameworkHomeURL": "https://github.com/pmndrs/zustand",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/pmndrs/zustand"
   },
   "scripts": {
     "dev": "webpack --watch",

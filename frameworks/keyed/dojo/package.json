@@ -9,7 +9,8 @@
     "issues": [
       1139
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/dojo/framework"
   },
   "scripts": {
     "build-prod": "NODE_OPTIONS=--openssl-legacy-provider dojo build"

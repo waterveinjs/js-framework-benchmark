@@ -6,3 +6,4 @@ export { updateFrameworkLockfiles } from "./update-lockfiles.js";
 export { createFrameworkZipArchive } from "./zip.js";
 export { rebuildAllFrameworks } from "./rebuild-all-frameworks.js";
 export { rebuildSingleFramework } from "./rebuild-single-framework.js";
+export { checkStatus } from "./check-status.js";

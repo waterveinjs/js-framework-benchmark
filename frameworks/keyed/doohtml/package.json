@@ -13,7 +13,8 @@
       772,
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/hman61/doodads"
   },
   "scripts": {
     "dev": "exit 0",

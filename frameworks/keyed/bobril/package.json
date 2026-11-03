@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "bobril",
     "frameworkHomeURL": "https://bobril.com/",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/Bobris/Bobril"
   },
   "scripts": {
     "dev": "bb",

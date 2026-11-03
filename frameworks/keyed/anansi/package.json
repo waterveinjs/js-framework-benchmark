@@ -9,7 +9,8 @@
     "issues": [
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/saru-tora/anansi"
   },
   "scripts": {
     "dev": "exit 0",

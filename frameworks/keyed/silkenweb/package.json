@@ -10,7 +10,8 @@
     "issues": [
       1139
     ],
-    "language": "Rust"
+    "language": "Rust",
+    "repoURL": "https://github.com/silkenweb/silkenweb"
   },
   "scripts": {
     "build-prod": "echo This is a no-op. && echo Due to heavy dependencies, the generated javascript and WASM is already provided. && echo If you really want to rebuild from source use: && echo npm run build-prod-force",

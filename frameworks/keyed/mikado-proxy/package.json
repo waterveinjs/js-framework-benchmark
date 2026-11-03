@@ -9,7 +9,8 @@
     "frameworkVersion": "0.8.400",
     "frameworkHomeURL": "https://github.com/nextapps-de/mikado/",
     "issues": [],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/nextapps-de/mikado"
   },
   "preferGlobal": false,
   "repository": {

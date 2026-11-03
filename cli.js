@@ -10,6 +10,7 @@ import {
   updateFrameworkLockfiles,
   rebuildAllFrameworks,
   rebuildSingleFramework,
+  checkStatus,
 } from "./cli/index.js";
 import { updateOneFramework } from "./cli/update-frameworks.js";
 
@@ -81,6 +82,15 @@ program
   .option("--ci [boolean]", "", false)
   .action((options) => {
     rebuildSingleFramework(options);
+  });
+
+program
+  .command("check-status")
+  .description("Generate status.csv with GitHub repository stats for all frameworks")
+  .option("--type [types...]", "", ["keyed", "non-keyed"])
+  .option("-o, --output [string]", "", "status.csv")
+  .action(async (options) => {
+    await checkStatus({ types: options.type, output: options.output });
   });
 
 program.parse();

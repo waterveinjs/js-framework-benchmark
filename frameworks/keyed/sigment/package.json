@@ -6,7 +6,12 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "sigment",
     "frameworkHomeURL": "https://sigment.dev",
-    "issues": [1139, 772, 801]
+    "issues": [
+      1139,
+      772,
+      801
+    ],
+    "repoURL": "https://github.com/sigmentjs/basic-sigment-typescript-vite"
   },
   "scripts": {
     "dev": "rollup -c -w",

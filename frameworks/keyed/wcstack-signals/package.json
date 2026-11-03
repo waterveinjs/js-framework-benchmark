@@ -6,7 +6,8 @@
     "frameworkVersionFromPackage": "@wcstack/signals",
     "frameworkHomeURL": "https://wcstack.github.io",
     "issues": [],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/wcstack/wcstack"
   },
   "scripts": {
     "dev": "exit 0",

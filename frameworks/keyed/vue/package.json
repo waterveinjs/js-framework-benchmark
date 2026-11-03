@@ -6,7 +6,8 @@
     "frameworkVersionFromPackage": "vue",
     "frameworkHomeURL": "https://vue.js.org/",
     "customURL": "/dist",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/vuejs/core"
   },
   "type": "module",
   "scripts": {

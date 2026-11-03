@@ -9,7 +9,8 @@
     "issues": [
       772
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/hman61/doodads"
   },
   "scripts": {
     "dev": "exit 0",

@@ -6,7 +6,8 @@
     "frameworkVersionFromPackage": "riot",
     "frameworkHomeURL": "https://riot.js.org/",
     "issues": [],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/riot/riot"
   },
   "scripts": {
     "dev": "webpack --watch",

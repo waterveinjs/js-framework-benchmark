@@ -10,7 +10,8 @@
     "useShadowRoot": false,
     "customURL": "/public",
     "includeInBuild": "public",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://gitlab.com/magnetjs/monorepo"
   },
   "scripts": {
     "dev": "exit 0",

@@ -8,7 +8,10 @@
     "frameworkVersionFromPackage": "@reatom/jsx:@reatom/core",
     "frameworkHomeURL": "https://www.reatom.dev/",
     "customURL": "/dist",
-    "issues": [800]
+    "issues": [
+      800
+    ],
+    "repoURL": "https://github.com/reatom/reatom"
   },
   "scripts": {
     "dev": "vite",

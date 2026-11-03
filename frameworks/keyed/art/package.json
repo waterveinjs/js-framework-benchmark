@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "js-art",
     "frameworkHomeURL": "https://github.com/sullay/Art-js",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/sullay/Art-js"
   },
   "scripts": {
     "dev": "vite",

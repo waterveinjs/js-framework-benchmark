@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "destam-dom",
     "frameworkHomeURL": "https://github.com/Nefsen402/destam-dom",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/Nefsen402/destam-dom"
   },
   "scripts": {
     "dev": "rollup -c -w",

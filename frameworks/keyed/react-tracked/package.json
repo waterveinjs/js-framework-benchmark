@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:react-tracked",
     "frameworkHomeURL": "https://react-tracked.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/dai-shi/react-tracked"
   },
   "scripts": {
     "dev": "webpack --watch",

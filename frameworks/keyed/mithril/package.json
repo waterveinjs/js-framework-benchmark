@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "mithril",
     "frameworkHomeURL": "https://mithril.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/MithrilJS/mithril.js"
   },
   "scripts": {
     "dev": "webpack -w -d",

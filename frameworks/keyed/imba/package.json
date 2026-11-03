@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "imba",
     "frameworkHomeURL": "https://imba.io/",
-    "language": "imba"
+    "language": "imba",
+    "repoURL": "https://github.com/imba/imba"
   },
   "scripts": {
     "dev": "webpack --watch",

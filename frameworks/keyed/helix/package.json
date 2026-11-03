@@ -4,7 +4,8 @@
   "js-framework-benchmark": {
     "frameworkVersion": "0.0.10",
     "frameworkHomeURL": "https://github.com/thheller/shadow-cljs#readme",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/thheller/shadow-cljs"
   },
   "scripts": {
     "watch": "shadow-cljs watch :app",

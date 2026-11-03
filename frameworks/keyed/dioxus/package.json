@@ -10,7 +10,8 @@
     "issues": [
       1139
     ],
-    "language": "Rust"
+    "language": "Rust",
+    "repoURL": "https://github.com/DioxusLabs/dioxus"
   },
   "scripts": {
     "build-prod": "echo This is a no-op. && echo Due to heavy dependencies, the generated javascript is already provided. && echo If you really want to rebuild from source use: && echo npm run build-prod-force",

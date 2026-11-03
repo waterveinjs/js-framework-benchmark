@@ -21,6 +21,7 @@
     "frameworkVersionFromPackage": "react:@supergrain/kernel",
     "frameworkHomeURL": "https://github.com/commoncurriculum/supergrain",
     "customURL": "/dist",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/commoncurriculum/supergrain"
   }
 }

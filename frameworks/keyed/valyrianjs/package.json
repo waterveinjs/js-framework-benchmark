@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "valyrian.js",
     "frameworkHomeURL": "https://github.com/Masquerade-Circus/valyrian.js",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/Masquerade-Circus/valyrian.js"
   },
   "scripts": {
     "build-dev": "node build.js --dev",

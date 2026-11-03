@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "ripple",
     "frameworkHomeURL": "https://ripple-ts.com/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/Ripple-TS/ripple"
   },
   "scripts": {
     "dev": "vite",

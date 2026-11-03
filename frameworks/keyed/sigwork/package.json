@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "A 1.7kb (gzipped) VDOM-less signal-based reactive framework.",
   "js-framework-benchmark": {
-    "frameworkVersion": "0.1.0",
+    "frameworkVersionFromPackage": "sigwork",
     "frameworkHomeURL": "https://framework.thatjust.works/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/thatjustworks/sigwork"
   },
   "type": "module",
   "scripts": {

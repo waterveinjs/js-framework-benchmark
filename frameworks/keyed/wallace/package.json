@@ -5,7 +5,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "wallace",
     "frameworkHomeURL": "https://wallace.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/wallace-js/wallace"
   },
   "scripts": {
     "dev": "webpack --watch",

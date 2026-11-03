@@ -6,7 +6,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "react:mobx",
     "frameworkHomeURL": "https://mobx.js.org/",
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/mobxjs/mobx"
   },
   "scripts": {
     "dev": "rollup -c -w",

@@ -1,9 +1,7 @@
 import React from "react";
-import "./SelectorContentContainer.css";
-import { Button, Flex } from "antd";
 
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactNode;
   selectNone: (event: React.SyntheticEvent) => void;
   selectUnflagged?: (event: React.SyntheticEvent) => void;
   selectAll: (event: React.SyntheticEvent) => void;
@@ -25,38 +23,30 @@ const SelectorContentContainer = ({
   grid = false,
   label,
 }: Props) => {
-  const handleSelectNone = (event: React.MouseEvent) => {
-    if (!isNoneSelected) selectNone(event);
-  };
-
-  const handleSelectUnflagged = (event: React.MouseEvent) => {
-    if (!isUnflaggedSelected && selectUnflagged) selectUnflagged(event);
-  };
-
-  const handleSelectAll = (event: React.MouseEvent) => {
-    if (!areAllSelected) selectAll(event);
-  };
-
   return (
-    <div className="selector-content-container">
-      <Flex justify="space-between" align="center">
+    <div className="selector-group">
+      <div className="selector-group__heading">
         <h3>{label}</h3>
-        <div className="selector-content-container__actions">
-          <Button type="text" onClick={handleSelectNone} disabled={isNoneSelected} aria-label="Select none">
+        <div className="selector-group__actions">
+          <button type="button" className="btn btn--text" onClick={selectNone} disabled={isNoneSelected}>
             None
-          </Button>
-          <Button type="text" onClick={handleSelectAll} disabled={areAllSelected} aria-label="Select all">
+          </button>
+          <button type="button" className="btn btn--text" onClick={selectAll} disabled={areAllSelected}>
             All
-          </Button>
-          {selectUnflagged &&
-          (<Button type="text" onClick={handleSelectUnflagged} disabled={isUnflaggedSelected} aria-label="Select unflagged">
-            Unflagged
-          </Button>)}
+          </button>
+          {selectUnflagged && (
+            <button
+              type="button"
+              className="btn btn--text"
+              onClick={selectUnflagged}
+              disabled={isUnflaggedSelected}
+            >
+              Unflagged
+            </button>
+          )}
         </div>
-      </Flex>
-      <div className={`selector-content-container__content ${grid ? "grid" : ""}`}>
-        <div className="selector-content-container__content-wrapper">{children}</div>
       </div>
+      <div className={`selector-group__list ${grid ? "selector-group__list--grid" : ""}`}>{children}</div>
     </div>
   );
 };

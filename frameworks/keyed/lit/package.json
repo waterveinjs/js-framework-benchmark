@@ -10,7 +10,8 @@
     "issues": [
       801
     ],
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/lit/lit"
   },
   "scripts": {
     "dev": "rollup -c -w",

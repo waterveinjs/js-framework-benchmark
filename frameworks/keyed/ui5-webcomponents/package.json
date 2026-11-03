@@ -12,7 +12,8 @@
     "issues": [
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/UI5/webcomponents"
   },
   "scripts": {
     "clean": "wc-dev clean",

@@ -6,7 +6,8 @@
     "frameworkVersion": "1.20.0",
     "frameworkHomeURL": "https://no-js.dev",
     "language": "JavaScript",
-    "includeInBuild": "index.html:src"
+    "includeInBuild": "index.html:src",
+    "repoURL": "https://github.com/no-js-dev/nojs"
   },
   "scripts": {
     "build-prod": "exit 0",

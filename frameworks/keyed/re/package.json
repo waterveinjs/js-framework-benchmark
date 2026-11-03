@@ -1,0 +1,42 @@
+{
+  "name": "js-framework-benchmark-re",
+  "version": "1.0.0",
+  "description": "@re — keyed benchmark implementation (tagged-template DOM engine + fine-grained signals + anchored keyed lists)",
+  "type": "module",
+  "main": "dist/bundle.js",
+  "js-framework-benchmark": {
+    "frameworkVersionFromPackage": "@zhenre/core",
+    "frameworkHomeURL": "https://github.com/krausest/js-framework-benchmark",
+    "language": "TypeScript",
+    "issues": [
+      772,
+      1261,
+      801
+    ],
+    "repoURL": "https://github.com/epp11/re"
+  },
+  "scripts": {
+    "dev": "esbuild src/main.ts --bundle --format=iife --outfile=dist/bundle.js --sourcemap",
+    "build-prod": "esbuild src/main.ts --bundle --format=iife --minify --outfile=dist/bundle.js"
+  },
+  "keywords": [
+    "js-framework-benchmark",
+    "signals",
+    "tagged-templates",
+    "keyed"
+  ],
+  "author": "@re contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/krausest/js-framework-benchmark",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krausest/js-framework-benchmark.git"
+  },
+  "dependencies": {
+    "@zhenre/core": "0.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "terser": "^5.51.2"
+  }
+}

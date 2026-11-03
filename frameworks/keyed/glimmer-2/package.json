@@ -28,7 +28,8 @@
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "@glimmer/core",
     "frameworkHomeURL": "https://glimmerjs.com/",
-    "language": "TypeScript"
+    "language": "TypeScript",
+    "repoURL": "https://github.com/tomdale/glimmer-lite"
   },
   "dependencies": {
     "@glimmer/babel-preset": "^2.0.0-beta.13",

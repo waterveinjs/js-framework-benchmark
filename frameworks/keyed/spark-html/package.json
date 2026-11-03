@@ -7,7 +7,8 @@
     "frameworkHomeURL": "https://spark-html.dev",
     "issues": [],
     "language": "JavaScript",
-    "customURL": "/dist"
+    "customURL": "/dist",
+    "repoURL": "https://github.com/wilkinnovo/spark-html"
   },
   "scripts": {
     "dev": "spark dev",

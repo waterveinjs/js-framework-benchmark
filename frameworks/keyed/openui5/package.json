@@ -8,7 +8,8 @@
     "issues": [
       1139
     ],
-    "language": "JavaScript"
+    "language": "JavaScript",
+    "repoURL": "https://github.com/UI5/openui5"
   },
   "scripts": {
     "build-dev": "ui5 serve -o index.html",
