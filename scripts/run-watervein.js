@@ -5,6 +5,7 @@ import { mkdtempSync, readFileSync, readdirSync, existsSync, mkdirSync, rmSync, 
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveExecutable } from "./resolve-executable.js";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const BENCHMARK_DIR = path.resolve(SCRIPT_DIR, "..");
@@ -44,15 +45,37 @@ function ensureChrome(waterveinDir) {
     ? [configuredBinary]
     : process.platform === "win32"
       ? ["chrome.exe", "chrome"]
-      : ["google-chrome", "google-chrome-stable", "chrome"];
+      : process.platform === "darwin"
+        ? [
+            "google-chrome",
+            "google-chrome-stable",
+            "chrome",
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          ]
+        : ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome"];
 
   for (const candidate of candidates) {
-    const binary =
-      path.isAbsolute(candidate) || candidate.includes("/") || candidate.includes("\\")
-        ? path.resolve(waterveinDir, candidate)
-        : candidate;
-    const versionOutput = spawnSync(binary, ["--version"], { encoding: "utf8" });
-    if (versionOutput.error || versionOutput.status !== 0) continue;
+    const binary = resolveExecutable(candidate, { cwd: waterveinDir });
+    if (!binary) {
+      if (configuredBinary) {
+        throw new Error(
+          "CHROME_BINARY points to an executable that could not be found: " + configuredBinary +
+            ". Set CHROME_BINARY to the Chrome/Chromium executable path, or unset it to use automatic detection.",
+        );
+      }
+      continue;
+    }
+
+    const versionOutput = spawnSync(binary, ["--version"], { encoding: "utf8", windowsHide: true });
+    if (versionOutput.error || versionOutput.status !== 0) {
+      if (configuredBinary) {
+        throw new Error(
+          "Could not run the browser configured by CHROME_BINARY (" + binary + "). " +
+            "Check that it is an executable Chrome/Chromium binary.",
+        );
+      }
+      continue;
+    }
 
     const versionText = (versionOutput.stdout + versionOutput.stderr).trim();
     const version = versionText.match(/\d+\.\d+\.\d+\.\d+/)?.[0];
@@ -61,6 +84,7 @@ function ensureChrome(waterveinDir) {
     }
 
     console.log("Using installed browser: " + versionText);
+    console.log("Resolved browser executable: " + binary);
     if (version !== CHROME_REFERENCE_VERSION) {
       console.warn(
         "Warning: benchmark reference Chrome is " + CHROME_REFERENCE_VERSION +
@@ -72,7 +96,9 @@ function ensureChrome(waterveinDir) {
   }
 
   throw new Error(
-    "Google Chrome was not found. Install Chrome and add it to PATH, or set CHROME_BINARY to its executable path.",
+    "Google Chrome/Chromium was not found. Install Chrome and add it to PATH, " +
+      "or set CHROME_BINARY to its executable path. " +
+      "The browser is detected automatically when it is available on PATH.",
   );
 }
 
@@ -89,7 +115,7 @@ function getChromeDriverInstallEnvironment(chromeVersion, chromeBinary) {
   // when Chrome is installed there) would otherwise select the system npm and
   // its potentially older Node.js runtime.
   const binaryDirectories = [chromeBinary, process.env.CHROMEDRIVER_BINARY]
-    .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes("\\")))
+    .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes("\\\\")))
     .map((binary) => path.dirname(path.resolve(process.cwd(), binary)));
   if (binaryDirectories.length > 0) {
     env.PATH = [...new Set([env.PATH || "", ...binaryDirectories])].filter(Boolean).join(path.delimiter);
