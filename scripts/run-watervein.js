@@ -33,8 +33,9 @@ function npmCommand() {
   return process.platform === "win32" ? "npm.cmd" : "npm";
 }
 
-function ensureChrome() {
+function ensureChrome(waterveinDir) {
   let binary = process.env.CHROME_BINARY;
+  if (binary && !path.isAbsolute(binary)) binary = path.resolve(waterveinDir, binary);
   if (!binary) {
     if (process.platform !== "linux" || process.arch !== "x64") {
       throw new Error("Set CHROME_BINARY to Chrome for Testing " + CHROME_VERSION + " on this platform.");
@@ -199,7 +200,7 @@ async function main() {
   console.log("Building the Watervein benchmark implementation...");
   await buildWaterveinFramework(waterveinDir);
 
-  const chromeBinary = ensureChrome();
+  const chromeBinary = ensureChrome(waterveinDir);
   await ensureServer();
 
   console.log("Running the full keyed framework benchmark...");
