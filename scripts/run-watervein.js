@@ -114,6 +114,30 @@ function ensureBenchmarkDependencies() {
   }
 }
 
+function buildComparisonFrameworks() {
+  const npm = npmCommand();
+
+  for (const framework of FRAMEWORKS.filter((name) => name !== "keyed/watervein")) {
+    const frameworkDir = path.join(BENCHMARK_DIR, "frameworks", framework);
+    const packageJson = path.join(frameworkDir, "package.json");
+    if (!existsSync(packageJson)) {
+      console.warn("Skipping " + framework + ": package.json was not found.");
+      continue;
+    }
+
+    if (!existsSync(path.join(frameworkDir, "node_modules"))) {
+      if (!existsSync(path.join(frameworkDir, "package-lock.json"))) {
+        throw new Error("Cannot install dependencies for " + framework + ": package-lock.json is missing.");
+      }
+      console.log("Installing dependencies for " + framework + " (first run)...");
+      run(npm, ["ci", "--ignore-scripts"], { cwd: frameworkDir });
+    }
+
+    console.log("Building " + framework + "...");
+    run(npm, ["run", "build-prod"], { cwd: frameworkDir });
+  }
+}
+
 async function buildWaterveinFramework(waterveinDir) {
   const npm = npmCommand();
   const packDir = mkdtempSync(path.join(os.tmpdir(), "watervein-jsfb-"));
@@ -193,11 +217,7 @@ async function main() {
 
   console.log("Building the comparison framework implementations...");
   process.chdir(BENCHMARK_DIR);
-  const { rebuildFrameworks } = await import(path.join(BENCHMARK_DIR, "cli", "rebuild-build-single.js"));
-  const otherFrameworks = FRAMEWORKS.filter((framework) => framework !== "keyed/watervein");
-  if (!rebuildFrameworks(otherFrameworks, true)) {
-    throw new Error("Building the comparison framework implementations failed.");
-  }
+  buildComparisonFrameworks();
 
   console.log("Building the Watervein benchmark implementation...");
   await buildWaterveinFramework(waterveinDir);
