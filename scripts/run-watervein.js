@@ -20,7 +20,7 @@ const FRAMEWORKS = [
   "keyed/watervein",
 ];
 const WATERVEIN_PACKAGES = ["core", "dom-core", "dom"];
-const CHROME_VERSION = "150.0.7871.46";
+const CHROME_REFERENCE_VERSION = "150.0.7871.46";
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -44,7 +44,7 @@ function ensureChrome(waterveinDir) {
     ? [configuredBinary]
     : process.platform === "win32"
       ? ["chrome.exe", "chrome"]
-      : ["google-chrome", "google-chrome-stable", "chrome", "chromium", "chromium-browser"];
+      : ["google-chrome", "google-chrome-stable", "chrome"];
 
   for (const candidate of candidates) {
     const binary =
@@ -54,18 +54,58 @@ function ensureChrome(waterveinDir) {
     const versionOutput = spawnSync(binary, ["--version"], { encoding: "utf8" });
     if (versionOutput.error || versionOutput.status !== 0) continue;
 
-    const actualVersion = (versionOutput.stdout + versionOutput.stderr).trim();
-    console.log(actualVersion);
-    if (!actualVersion.includes(CHROME_VERSION)) {
-      throw new Error("Expected Chrome " + CHROME_VERSION + ", but found: " + actualVersion);
+    const versionText = (versionOutput.stdout + versionOutput.stderr).trim();
+    const version = versionText.match(/\\d+\\.\\d+\\.\\d+\\.\\d+/)?.[0];
+    if (!version) {
+      throw new Error("Could not determine the installed Chrome version from: " + versionText);
     }
-    return binary;
+
+    console.log("Using installed browser: " + versionText);
+    if (version !== CHROME_REFERENCE_VERSION) {
+      console.warn(
+        "Warning: benchmark reference Chrome is " + CHROME_REFERENCE_VERSION +
+          ", but the installed browser is " + version +
+          ". Results from different Chrome versions should not be compared directly.",
+      );
+    }
+    return { binary, version };
   }
 
   throw new Error(
-    "Chrome for Testing " + CHROME_VERSION +
-      " was not found. Install it and add it to PATH, or set CHROME_BINARY to its executable path.",
+    "Google Chrome was not found. Install Chrome and add it to PATH, or set CHROME_BINARY to its executable path.",
   );
+}
+
+function getChromeDriverInstallEnvironment(chromeVersion) {
+  const env = {
+    ...process.env,
+    // The runner explicitly launches the installed Google Chrome executable.
+    // Do not download Playwright-managed Chromium/Firefox/WebKit browser builds.
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1",
+  };
+
+  const driverBinary = process.env.CHROMEDRIVER_BINARY ||
+    (process.platform === "win32" ? "chromedriver.exe" : "chromedriver");
+  const driverResult = spawnSync(driverBinary, ["--version"], { encoding: "utf8" });
+  const driverText = !driverResult.error && driverResult.status === 0
+    ? (driverResult.stdout + driverResult.stderr).trim()
+    : "";
+  const driverMajor = driverText.match(/ChromeDriver\\s+(\\d+)/i)?.[1];
+  const chromeMajor = chromeVersion.split(".")[0];
+
+  if (driverMajor === chromeMajor) {
+    env.CHROMEDRIVER_SKIP_DOWNLOAD = "true";
+    console.log("Reusing compatible system ChromeDriver: " + driverText);
+  } else {
+    env.CHROMEDRIVER_SKIP_DOWNLOAD = "false";
+    if (driverText) {
+      console.log("System ChromeDriver is not compatible with Chrome " + chromeVersion + "; installing the benchmark-pinned driver.");
+    } else {
+      console.log("No system ChromeDriver found; the benchmark dependency setup will install its required driver.");
+    }
+  }
+
+  return { env, driverText };
 }
 
 async function ensureServer() {
@@ -102,7 +142,7 @@ async function ensureServer() {
   throw new Error("The benchmark server did not become ready at http://127.0.0.1:8080.");
 }
 
-function installNpmDependencies(directory, label, { ignoreScripts = false } = {}) {
+function installNpmDependencies(directory, label, env = process.env) {
   const manifestPath = path.join(directory, "package.json");
   if (!existsSync(manifestPath)) {
     throw new Error("Cannot set up " + label + ": package.json was not found at " + directory);
@@ -113,7 +153,7 @@ function installNpmDependencies(directory, label, { ignoreScripts = false } = {}
   const fingerprint = createHash("sha256")
     .update(readFileSync(manifestPath))
     .update(existsSync(lockPath) ? readFileSync(lockPath) : "no-lockfile")
-    .update(ignoreScripts ? "ignore-scripts" : "run-scripts")
+    .update("run-scripts")
     .digest("hex");
 
   if (existsSync(markerPath) && readFileSync(markerPath, "utf8") === fingerprint) {
@@ -124,10 +164,9 @@ function installNpmDependencies(directory, label, { ignoreScripts = false } = {}
   const args = existsSync(lockPath)
     ? ["ci", "--no-audit", "--no-fund"]
     : ["install", "--no-audit", "--no-fund"];
-  if (ignoreScripts) args.push("--ignore-scripts");
 
-  console.log("Installing " + label + " dependencies...");
-  run(npmCommand(), args, { cwd: directory });
+  console.log("Installing " + label + " dependencies (normal lifecycle scripts enabled)...");
+  run(npmCommand(), args, { cwd: directory, env });
   writeFileSync(markerPath, fingerprint);
 }
 
@@ -153,22 +192,42 @@ function ensureWaterveinDependencies(waterveinDir) {
   writeFileSync(markerPath, fingerprint);
 }
 
-function ensureBenchmarkDependencies() {
-  // The root postinstall runs a second server install. Skip lifecycle scripts here
-  // and install each workspace explicitly below so setup remains deterministic.
-  installNpmDependencies(BENCHMARK_DIR, "benchmark root", { ignoreScripts: true });
-
-  // Playwright is pointed at the user's existing Chrome executable. Disabling
-  // lifecycle scripts here also prevents chromedriver/Playwright install hooks
-  // from downloading browser or driver binaries.
-  installNpmDependencies(path.join(BENCHMARK_DIR, "webdriver-ts"), "webdriver-ts", {
-    ignoreScripts: true,
-  });
-  installNpmDependencies(
+function ensureBenchmarkDependencies(chromeVersion) {
+  const { env, driverText } = getChromeDriverInstallEnvironment(chromeVersion);
+  const dependencyDirectories = [
+    BENCHMARK_DIR,
+    path.join(BENCHMARK_DIR, "webdriver-ts"),
     path.join(BENCHMARK_DIR, "webdriver-ts-results"),
-    "benchmark report",
-  );
-  installNpmDependencies(path.join(BENCHMARK_DIR, "server"), "benchmark server");
+    path.join(BENCHMARK_DIR, "server"),
+  ];
+  const fingerprintHash = createHash("sha256");
+  for (const directory of dependencyDirectories) {
+    fingerprintHash
+      .update(readFileSync(path.join(directory, "package.json")))
+      .update(existsSync(path.join(directory, "package-lock.json"))
+        ? readFileSync(path.join(directory, "package-lock.json"))
+        : "no-lockfile");
+  }
+  const fingerprint = fingerprintHash
+    .update(env.PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD)
+    .update(env.CHROMEDRIVER_SKIP_DOWNLOAD)
+    .update(driverText)
+    .digest("hex");
+  const markerPath = path.join(BENCHMARK_DIR, "node_modules", ".jsfb-dependency-setup-state");
+  if (existsSync(markerPath) && readFileSync(markerPath, "utf8") === fingerprint) {
+    console.log("Benchmark dependencies are already up to date; skipping npm setup.");
+    return false;
+  }
+
+  // Follow the benchmark repository's normal setup. This runs root postinstall,
+  // then installs/compiles WebDriver, installs report dependencies, and installs
+  // server dependencies. Only redundant browser/driver binary downloads are
+  // skipped; package lifecycle scripts remain enabled.
+  console.log("Installing benchmark dependencies with the standard npm setup...");
+  run(npmCommand(), ["ci", "--no-audit", "--no-fund"], { cwd: BENCHMARK_DIR, env });
+  run(npmCommand(), ["run", "install-local"], { cwd: BENCHMARK_DIR, env });
+  writeFileSync(markerPath, fingerprint);
+  return true;
 }
 
 function buildComparisonFrameworks() {
@@ -252,17 +311,19 @@ async function main() {
     );
   }
 
-  const chromeBinary = ensureChrome(waterveinDir);
+  const chrome = ensureChrome(waterveinDir);
 
   console.log("Setting up Watervein and benchmark dependencies...");
   ensureWaterveinDependencies(waterveinDir);
-  ensureBenchmarkDependencies();
+  const benchmarkDependenciesInstalled = ensureBenchmarkDependencies(chrome.version);
 
   console.log("Building Watervein packages...");
   run("pnpm", ["build"], { cwd: waterveinDir });
 
-  console.log("Compiling the benchmark runner...");
-  run(npmCommand(), ["run", "compile-webdriver-ts"], { cwd: BENCHMARK_DIR });
+  if (!benchmarkDependenciesInstalled) {
+    console.log("Compiling the benchmark runner...");
+    run(npmCommand(), ["run", "compile-webdriver-ts"], { cwd: BENCHMARK_DIR });
+  }
 
   console.log("Building the comparison framework implementations...");
   process.chdir(BENCHMARK_DIR);
@@ -285,7 +346,7 @@ async function main() {
       "--headless",
       "false",
       "--chromeBinary",
-      chromeBinary,
+      chrome.binary,
       ...FRAMEWORKS,
       ...process.argv.slice(2),
     ],
@@ -297,7 +358,7 @@ async function main() {
   const memoryGb = (os.totalmem() / 1024 ** 3).toFixed(1);
   const reportEnvironment = {
     ...process.env,
-    VITE_BENCHMARK_BROWSER: "Chrome " + CHROME_VERSION,
+    VITE_BENCHMARK_BROWSER: "Chrome " + chrome.version,
     VITE_BENCHMARK_ARCH: process.arch,
     VITE_BENCHMARK_HARDWARE: cpuModel + ", " + os.cpus().length + " logical CPUs, " + memoryGb + " GB RAM",
     VITE_BENCHMARK_OS: os.type() + " " + os.release(),
