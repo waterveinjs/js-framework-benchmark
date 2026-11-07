@@ -55,7 +55,7 @@ function ensureChrome(waterveinDir) {
     if (versionOutput.error || versionOutput.status !== 0) continue;
 
     const versionText = (versionOutput.stdout + versionOutput.stderr).trim();
-    const version = versionText.match(/\\d+\\.\\d+\\.\\d+\\.\\d+/)?.[0];
+    const version = versionText.match(/\d+\.\d+\.\d+\.\d+/)?.[0];
     if (!version) {
       throw new Error("Could not determine the installed Chrome version from: " + versionText);
     }
@@ -90,7 +90,7 @@ function getChromeDriverInstallEnvironment(chromeVersion) {
   const driverText = !driverResult.error && driverResult.status === 0
     ? (driverResult.stdout + driverResult.stderr).trim()
     : "";
-  const driverMajor = driverText.match(/ChromeDriver\\s+(\\d+)/i)?.[1];
+  const driverMajor = driverText.match(/ChromeDriver\s+(\d+)/i)?.[1];
   const chromeMajor = chromeVersion.split(".")[0];
 
   if (driverMajor === chromeMajor) {
