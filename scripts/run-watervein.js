@@ -76,13 +76,22 @@ function ensureChrome(waterveinDir) {
   );
 }
 
-function getChromeDriverInstallEnvironment(chromeVersion) {
+function getChromeDriverInstallEnvironment(chromeVersion, chromeBinary) {
   const env = {
     ...process.env,
     // The runner explicitly launches the installed Google Chrome executable.
     // Do not download Playwright-managed Chromium/Firefox/WebKit browser builds.
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1",
   };
+
+  // Make explicitly configured local binaries discoverable by npm lifecycle
+  // scripts as well as by the benchmark runner.
+  const binaryDirectories = [chromeBinary, process.env.CHROMEDRIVER_BINARY]
+    .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes("\\")))
+    .map((binary) => path.dirname(path.resolve(process.cwd(), binary)));
+  if (binaryDirectories.length > 0) {
+    env.PATH = [...new Set([...binaryDirectories, env.PATH || ""])].filter(Boolean).join(path.delimiter);
+  }
 
   const driverBinary = process.env.CHROMEDRIVER_BINARY ||
     (process.platform === "win32" ? "chromedriver.exe" : "chromedriver");
@@ -96,15 +105,17 @@ function getChromeDriverInstallEnvironment(chromeVersion) {
 
   if (driverBuild && driverBuild === chromeBuild) {
     env.CHROMEDRIVER_SKIP_DOWNLOAD = "true";
+    delete env.DETECT_CHROMEDRIVER_VERSION;
     console.log("Reusing compatible system ChromeDriver: " + driverText);
   } else {
-    // Leave the variable unset so the chromedriver package runs its normal
-    // installer. This also overrides a stale inherited skip-download setting.
+    // Let the package's installer choose the ChromeDriver build matching the
+    // installed Chrome, rather than reusing an incompatible system binary.
     delete env.CHROMEDRIVER_SKIP_DOWNLOAD;
+    env.DETECT_CHROMEDRIVER_VERSION = "true";
     if (driverText) {
-      console.log("System ChromeDriver is not compatible with Chrome " + chromeVersion + "; installing the benchmark-pinned driver.");
+      console.log("System ChromeDriver does not match Chrome " + chromeVersion + "; installing a matching driver.");
     } else {
-      console.log("No compatible system ChromeDriver found; the benchmark dependency setup will install its required driver.");
+      console.log("No compatible system ChromeDriver found; installing a driver matching Chrome " + chromeVersion + ".");
     }
   }
 
@@ -195,8 +206,8 @@ function ensureWaterveinDependencies(waterveinDir) {
   writeFileSync(markerPath, fingerprint);
 }
 
-function ensureBenchmarkDependencies(chromeVersion) {
-  const { env, driverText } = getChromeDriverInstallEnvironment(chromeVersion);
+function ensureBenchmarkDependencies(chromeVersion, chromeBinary) {
+  const { env, driverText } = getChromeDriverInstallEnvironment(chromeVersion, chromeBinary);
   const dependencyDirectories = [
     BENCHMARK_DIR,
     path.join(BENCHMARK_DIR, "webdriver-ts"),
@@ -212,8 +223,10 @@ function ensureBenchmarkDependencies(chromeVersion) {
         : "no-lockfile");
   }
   const fingerprint = fingerprintHash
+    .update(chromeVersion)
     .update(env.PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD)
-    .update(env.CHROMEDRIVER_SKIP_DOWNLOAD)
+    .update(env.CHROMEDRIVER_SKIP_DOWNLOAD || "download-driver")
+    .update(env.DETECT_CHROMEDRIVER_VERSION || "pinned-driver")
     .update(driverText)
     .digest("hex");
   const markerPath = path.join(BENCHMARK_DIR, "node_modules", ".jsfb-dependency-setup-state");
@@ -318,7 +331,7 @@ async function main() {
 
   console.log("Setting up Watervein and benchmark dependencies...");
   ensureWaterveinDependencies(waterveinDir);
-  const benchmarkDependenciesInstalled = ensureBenchmarkDependencies(chrome.version);
+  const benchmarkDependenciesInstalled = ensureBenchmarkDependencies(chrome.version, chrome.binary);
 
   console.log("Building Watervein packages...");
   run("pnpm", ["build"], { cwd: waterveinDir });
