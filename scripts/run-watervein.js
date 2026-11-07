@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, readdirSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -22,7 +23,11 @@ const WATERVEIN_PACKAGES = ["core", "dom-core", "dom"];
 const CHROME_VERSION = "150.0.7871.46";
 
 function run(command, args, options = {}) {
-  const result = spawnSync(command, args, { stdio: "inherit", ...options });
+  const result = spawnSync(command, args, {
+    stdio: "inherit",
+    shell: process.platform === "win32",
+    ...options,
+  });
   if (result.error) throw result.error;
   if (result.status !== 0) {
     throw new Error(command + " " + args.join(" ") + " exited with status " + result.status);
@@ -96,45 +101,87 @@ async function ensureServer() {
   throw new Error("The benchmark server did not become ready at http://127.0.0.1:8080.");
 }
 
-function ensureBenchmarkDependencies() {
-  const requiredDirectories = [
-    "node_modules",
-    path.join("server", "node_modules"),
-    path.join("webdriver-ts", "node_modules"),
-    path.join("webdriver-ts-results", "node_modules"),
-  ];
-  const missing = requiredDirectories.filter(
-    (directory) => !existsSync(path.join(BENCHMARK_DIR, directory)),
-  );
-  if (missing.length > 0) {
-    throw new Error(
-      "js-framework-benchmark dependencies are missing: " + missing.join(", ") +
-        ". Install the repository dependencies before running pnpm jsfb (see the README).",
-    );
+function installNpmDependencies(directory, label, { ignoreScripts = false } = {}) {
+  const manifestPath = path.join(directory, "package.json");
+  if (!existsSync(manifestPath)) {
+    throw new Error("Cannot set up " + label + ": package.json was not found at " + directory);
   }
+
+  const lockPath = path.join(directory, "package-lock.json");
+  const markerPath = path.join(directory, "node_modules", ".jsfb-install-state.json");
+  const fingerprint = createHash("sha256")
+    .update(readFileSync(manifestPath))
+    .update(existsSync(lockPath) ? readFileSync(lockPath) : "no-lockfile")
+    .update(ignoreScripts ? "ignore-scripts" : "run-scripts")
+    .digest("hex");
+
+  if (existsSync(markerPath) && readFileSync(markerPath, "utf8") === fingerprint) {
+    console.log(label + " dependencies are already up to date; skipping install.");
+    return;
+  }
+
+  const args = existsSync(lockPath)
+    ? ["ci", "--no-audit", "--no-fund"]
+    : ["install", "--no-audit", "--no-fund"];
+  if (ignoreScripts) args.push("--ignore-scripts");
+
+  console.log("Installing " + label + " dependencies...");
+  run(npmCommand(), args, { cwd: directory });
+  writeFileSync(markerPath, fingerprint + "\\n");
+}
+
+function ensureWaterveinDependencies(waterveinDir) {
+  const lockPath = path.join(waterveinDir, "pnpm-lock.yaml");
+  if (!existsSync(lockPath)) {
+    throw new Error("pnpm-lock.yaml was not found in the Watervein repository root.");
+  }
+
+  const markerPath = path.join(waterveinDir, "node_modules", ".jsfb-pnpm-install-state.json");
+  const fingerprint = createHash("sha256")
+    .update(readFileSync(path.join(waterveinDir, "package.json")))
+    .update(readFileSync(lockPath))
+    .digest("hex");
+
+  if (existsSync(markerPath) && readFileSync(markerPath, "utf8") === fingerprint) {
+    console.log("Watervein workspace dependencies are already up to date; skipping install.");
+    return;
+  }
+
+  console.log("Installing Watervein workspace dependencies...");
+  run("pnpm", ["install", "--frozen-lockfile", "--prefer-offline"], { cwd: waterveinDir });
+  writeFileSync(markerPath, fingerprint + "\\n");
+}
+
+function ensureBenchmarkDependencies() {
+  // The root postinstall runs a second server install. Skip lifecycle scripts here
+  // and install each workspace explicitly below so setup remains deterministic.
+  installNpmDependencies(BENCHMARK_DIR, "benchmark root", { ignoreScripts: true });
+
+  // Playwright is pointed at the user's existing Chrome executable. Disabling
+  // lifecycle scripts here also prevents chromedriver/Playwright install hooks
+  // from downloading browser or driver binaries.
+  installNpmDependencies(path.join(BENCHMARK_DIR, "webdriver-ts"), "webdriver-ts", {
+    ignoreScripts: true,
+  });
+  installNpmDependencies(
+    path.join(BENCHMARK_DIR, "webdriver-ts-results"),
+    "benchmark report",
+  );
+  installNpmDependencies(path.join(BENCHMARK_DIR, "server"), "benchmark server");
 }
 
 function buildComparisonFrameworks() {
-  const npm = npmCommand();
-
   for (const framework of FRAMEWORKS.filter((name) => name !== "keyed/watervein")) {
     const frameworkDir = path.join(BENCHMARK_DIR, "frameworks", framework);
-    const packageJson = path.join(frameworkDir, "package.json");
-    if (!existsSync(packageJson)) {
-      console.warn("Skipping " + framework + ": package.json was not found.");
-      continue;
+    const packageJsonPath = path.join(frameworkDir, "package.json");
+    if (!existsSync(packageJsonPath)) {
+      throw new Error("Required comparison framework is missing: " + framework);
     }
 
-    if (!existsSync(path.join(frameworkDir, "node_modules"))) {
-      if (!existsSync(path.join(frameworkDir, "package-lock.json"))) {
-        throw new Error("Cannot install dependencies for " + framework + ": package-lock.json is missing.");
-      }
-      console.log("Installing dependencies for " + framework + " (first run)...");
-      run(npm, ["ci", "--ignore-scripts"], { cwd: frameworkDir });
-    }
+    installNpmDependencies(frameworkDir, framework);
 
     console.log("Building " + framework + "...");
-    run(npm, ["run", "build-prod"], { cwd: frameworkDir });
+    run(npmCommand(), ["run", "build-prod"], { cwd: frameworkDir });
   }
 }
 
@@ -206,7 +253,8 @@ async function main() {
 
   const chromeBinary = ensureChrome(waterveinDir);
 
-  console.log("Checking js-framework-benchmark dependencies...");
+  console.log("Setting up Watervein and benchmark dependencies...");
+  ensureWaterveinDependencies(waterveinDir);
   ensureBenchmarkDependencies();
 
   console.log("Building Watervein packages...");
