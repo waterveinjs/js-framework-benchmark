@@ -115,7 +115,7 @@ function getChromeDriverInstallEnvironment(chromeVersion, chromeBinary) {
   // when Chrome is installed there) would otherwise select the system npm and
   // its potentially older Node.js runtime.
   const binaryDirectories = [chromeBinary, process.env.CHROMEDRIVER_BINARY]
-    .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes("\\\\")))
+    .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes(path.sep)))
     .map((binary) => path.dirname(path.resolve(process.cwd(), binary)));
   if (binaryDirectories.length > 0) {
     env.PATH = [...new Set([env.PATH || "", ...binaryDirectories])].filter(Boolean).join(path.delimiter);
