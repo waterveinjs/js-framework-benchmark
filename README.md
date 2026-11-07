@@ -596,25 +596,34 @@ pnpm jsfb
 ```
 
 On the first run, Watervein clones this repository into
-`watervein/js-framework-benchmark`. The directory is ignored by Watervein's
-Git configuration. If the directory already exists, the setup script leaves it
-untouched and does not clone again.
+`./js-framework-benchmark` under the Watervein repository root. The directory
+is ignored by Watervein's Git configuration. If it already exists, the setup
+script reuses it without cloning again.
 
-Before running the benchmark, install this repository's dependencies once:
-run `npm ci` at the repository root, then `npm run install-local`. The
-runner expects Chrome for Testing 150.0.7871.46 to be installed and
-available on `PATH`; alternatively, set `CHROME_BINARY` to its executable
-path. The runner does not download Chrome or install npm dependencies.
+**No separate dependency setup command is required.** The `pnpm jsfb` command
+automatically installs the Watervein workspace dependencies, this benchmark
+repository's root/server/WebDriver/report dependencies, and the selected
+framework dependencies when their lockfiles or manifests change. It compiles
+`webdriver-ts`, builds the comparison frameworks and Watervein, starts the
+benchmark server, runs the comparison, and generates the HTML report.
 
-The runner builds the current Watervein workspace, temporarily installs its
-packed packages into this repository's `frameworks/keyed/watervein`
-implementation, builds the other selected keyed implementations, runs the
-full comparison with Playwright, and generates the HTML report at
-`js-framework-benchmark/webdriver-ts-results/dist/index.html`.
-The temporary Watervein package manifest changes are restored after the
-build. The report records the actual local browser, CPU, memory, OS, and
-runner metadata. The benchmark server is started automatically and remains
-available at `http://127.0.0.1:8080`.
+Chrome for Testing `150.0.7871.46` must already be installed and available on
+`PATH`; alternatively, set `CHROME_BINARY` to its executable path. The
+runner validates the installed version and **does not download or install
+Chrome, ChromeDriver, or Playwright browser binaries**. WebDriver dependencies
+are installed with lifecycle scripts disabled to prevent browser/driver
+download hooks from running.
+
+The Watervein packages are packed from the current workspace and temporarily
+installed into this repository's `frameworks/keyed/watervein` implementation.
+The temporary package manifest changes are restored after the build. The
+report records the actual local browser, CPU, memory, OS, and runner metadata.
+The benchmark server is started automatically and remains available at
+`http://127.0.0.1:8080`.
+
+The first run can take longer because dependencies and framework builds must
+be prepared. Later runs reuse dependency installations when the corresponding
+package manifests and lockfiles have not changed.
 
 
 # History
