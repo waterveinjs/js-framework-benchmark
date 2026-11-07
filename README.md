@@ -602,7 +602,7 @@ implementation, builds the other selected keyed implementations, runs the
 full comparison with Playwright and Chrome for Testing 150.0.7871.46, and
 generates the HTML report at
 `webdriver-ts-results/dist/index.html`. The temporary Watervein package
-manifest changes are restored after the build.
+manifest changes are restored after the build. The generated report receives the actual local browser, CPU, memory, OS, and runner metadata instead of the repository's old hard-coded sample machine.
 
 On Linux x64, Chrome for Testing is downloaded to the user's cache on the
 first run. On other platforms, set `CHROME_BINARY` to a Chrome for Testing
