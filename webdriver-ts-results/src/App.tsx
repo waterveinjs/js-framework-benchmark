@@ -26,7 +26,11 @@ const KnownIssuesList = () => {
 };
 
 const App = () => {
-  const version = "Chrome 156.0.8078.48";
+  const version = import.meta.env.VITE_BENCHMARK_BROWSER ?? "Browser version not recorded";
+  const architecture = import.meta.env.VITE_BENCHMARK_ARCH ?? "unknown architecture";
+  const hardware = import.meta.env.VITE_BENCHMARK_HARDWARE ?? "Hardware details not recorded";
+  const operatingSystem = import.meta.env.VITE_BENCHMARK_OS ?? "Operating system not recorded";
+  const runner = import.meta.env.VITE_BENCHMARK_RUNNER ?? "Unknown";
   const isOfficial = false;
   const archiveUrl = "https://krausest.github.io/js-framework-benchmark/";
 
@@ -79,18 +83,18 @@ const App = () => {
               <dl className="test-environment">
                 <div>
                   <dt>Browser</dt>
-                  <dd>{version} (arm64)</dd>
+                  <dd>{version} ({architecture})</dd>
                 </div>
                 <div>
                   <dt>Hardware</dt>
-                  <dd>MacBook Pro 14 · M4, 14/20 cores · 48 GB RAM</dd>
+                  <dd>{hardware}</dd>
                 </div>
                 <div>
                   <dt>Operating system</dt>
-                  <dd>OSX 26.6.2</dd>
+                  <dd>{operatingSystem}</dd>
                 </div>
               </dl>
-              <p>Measured with the Puppeteer benchmark driver and reduced tracing.</p>
+              <p>Measured with the {runner} benchmark driver.</p>
               <p>
                 Starting with Chrome 118, the overall result uses a{" "}
                 <a href="https://github.com/krausest/js-framework-benchmark/wiki/Computation-of-the-weighted-geometric-mean">
