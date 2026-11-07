@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -34,36 +34,33 @@ function npmCommand() {
 }
 
 function ensureChrome(waterveinDir) {
-  let binary = process.env.CHROME_BINARY;
-  if (binary && !path.isAbsolute(binary)) binary = path.resolve(waterveinDir, binary);
-  if (!binary) {
-    if (process.platform !== "linux" || process.arch !== "x64") {
-      throw new Error("Set CHROME_BINARY to Chrome for Testing " + CHROME_VERSION + " on this platform.");
-    }
+  const configuredBinary = process.env.CHROME_BINARY;
+  const candidates = configuredBinary
+    ? [configuredBinary]
+    : process.platform === "win32"
+      ? ["chrome.exe", "chrome"]
+      : ["google-chrome", "google-chrome-stable", "chrome", "chromium", "chromium-browser"];
 
-    const cacheDir = path.join(os.homedir(), ".cache", "watervein-jsfb", CHROME_VERSION);
-    binary = path.join(cacheDir, "chrome-linux64", "chrome");
-    if (!existsSync(binary)) {
-      mkdirSync(cacheDir, { recursive: true });
-      const archive = path.join(cacheDir, "chrome-linux64.zip");
-      const url = "https://storage.googleapis.com/chrome-for-testing-public/" + CHROME_VERSION + "/linux64/chrome-linux64.zip";
-      console.log("Downloading Chrome for Testing " + CHROME_VERSION + "...");
-      run("curl", ["--fail", "--location", "--show-error", url, "--output", archive]);
-      run("unzip", ["-q", "-o", archive, "-d", cacheDir]);
-      rmSync(archive, { force: true });
+  for (const candidate of candidates) {
+    const binary =
+      path.isAbsolute(candidate) || candidate.includes("/") || candidate.includes("\\")
+        ? path.resolve(waterveinDir, candidate)
+        : candidate;
+    const versionOutput = spawnSync(binary, ["--version"], { encoding: "utf8" });
+    if (versionOutput.error || versionOutput.status !== 0) continue;
+
+    const actualVersion = (versionOutput.stdout + versionOutput.stderr).trim();
+    console.log(actualVersion);
+    if (!actualVersion.includes(CHROME_VERSION)) {
+      throw new Error("Expected Chrome " + CHROME_VERSION + ", but found: " + actualVersion);
     }
+    return binary;
   }
 
-  const versionOutput = spawnSync(binary, ["--version"], { encoding: "utf8" });
-  if (versionOutput.error || versionOutput.status !== 0) {
-    throw new Error("Unable to execute Chrome at " + binary + ". Set CHROME_BINARY to a working Chrome for Testing binary.");
-  }
-  const actualVersion = (versionOutput.stdout + versionOutput.stderr).trim();
-  console.log(actualVersion);
-  if (!actualVersion.includes(CHROME_VERSION)) {
-    throw new Error("Expected Chrome " + CHROME_VERSION + ", but found: " + actualVersion);
-  }
-  return binary;
+  throw new Error(
+    "Chrome for Testing " + CHROME_VERSION +
+      " was not found. Install it and add it to PATH, or set CHROME_BINARY to its executable path.",
+  );
 }
 
 async function ensureServer() {
@@ -100,20 +97,20 @@ async function ensureServer() {
 }
 
 function ensureBenchmarkDependencies() {
-  const npm = npmCommand();
-  if (!existsSync(path.join(BENCHMARK_DIR, "node_modules"))) {
-    run(npm, ["ci", "--ignore-scripts", "--legacy-peer-deps"], { cwd: BENCHMARK_DIR });
-  }
-
-  const installs = [
-    ["install-server", path.join(BENCHMARK_DIR, "server", "node_modules")],
-    ["install-webdriver-ts", path.join(BENCHMARK_DIR, "webdriver-ts", "node_modules")],
-    ["install-webdriver-ts-results", path.join(BENCHMARK_DIR, "webdriver-ts-results", "node_modules")],
+  const requiredDirectories = [
+    "node_modules",
+    path.join("server", "node_modules"),
+    path.join("webdriver-ts", "node_modules"),
+    path.join("webdriver-ts-results", "node_modules"),
   ];
-  for (const [scriptName, nodeModules] of installs) {
-    if (!existsSync(nodeModules)) {
-      run(npm, ["run", scriptName], { cwd: BENCHMARK_DIR });
-    }
+  const missing = requiredDirectories.filter(
+    (directory) => !existsSync(path.join(BENCHMARK_DIR, directory)),
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      "js-framework-benchmark dependencies are missing: " + missing.join(", ") +
+        ". Install the repository dependencies before running pnpm jsfb (see the README).",
+    );
   }
 }
 
@@ -188,6 +185,9 @@ async function main() {
 
   console.log("Preparing js-framework-benchmark dependencies...");
   ensureBenchmarkDependencies();
+
+  console.log("Compiling the benchmark runner...");
+  run(npmCommand(), ["run", "compile-webdriver-ts"], { cwd: BENCHMARK_DIR });
 
   console.log("Building the comparison framework implementations...");
   process.chdir(BENCHMARK_DIR);
