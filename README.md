@@ -607,12 +607,21 @@ framework dependencies when their lockfiles or manifests change. It compiles
 `webdriver-ts`, builds the comparison frameworks and Watervein, starts the
 benchmark server, runs the comparison, and generates the HTML report.
 
-Chrome for Testing `150.0.7871.46` must already be installed and available on
-`PATH`; alternatively, set `CHROME_BINARY` to its executable path. The
-runner validates the installed version and **does not download or install
-Chrome, ChromeDriver, or Playwright browser binaries**. WebDriver dependencies
-are installed with lifecycle scripts disabled to prevent browser/driver
-download hooks from running.
+Google Chrome must already be installed and available on `PATH`;
+alternatively, set `CHROME_BINARY` to its executable path. Chrome
+`150.0.7871.46` is the reference version used for the CI comparison, but other
+installed Chrome versions are accepted with a warning. The report records the
+actual browser version used.
+
+The runner follows the benchmark repository's normal dependency setup
+(`npm ci` followed by `npm run install-local`) with lifecycle scripts enabled.
+It installs the Playwright npm package and the benchmark's other declared
+dependencies normally. Because the runner explicitly launches the installed
+Google Chrome, Playwright-managed browser downloads are skipped to avoid
+installing another browser. A compatible system ChromeDriver is reused when
+available; otherwise the benchmark's normal ChromeDriver install script
+provides the required driver. Chrome itself is never downloaded or installed
+by this command.
 
 The Watervein packages are packed from the current workspace and temporarily
 installed into this repository's `frameworks/keyed/watervein` implementation.
