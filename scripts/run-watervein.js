@@ -90,18 +90,21 @@ function getChromeDriverInstallEnvironment(chromeVersion) {
   const driverText = !driverResult.error && driverResult.status === 0
     ? (driverResult.stdout + driverResult.stderr).trim()
     : "";
-  const driverMajor = driverText.match(/ChromeDriver\s+(\d+)/i)?.[1];
-  const chromeMajor = chromeVersion.split(".")[0];
+  const driverVersion = driverText.match(/(\d+\.\d+\.\d+\.\d+)/)?.[1];
+  const chromeBuild = chromeVersion.split(".").slice(0, 3).join(".");
+  const driverBuild = driverVersion?.split(".").slice(0, 3).join(".");
 
-  if (driverMajor === chromeMajor) {
+  if (driverBuild && driverBuild === chromeBuild) {
     env.CHROMEDRIVER_SKIP_DOWNLOAD = "true";
     console.log("Reusing compatible system ChromeDriver: " + driverText);
   } else {
-    env.CHROMEDRIVER_SKIP_DOWNLOAD = "false";
+    // Leave the variable unset so the chromedriver package runs its normal
+    // installer. This also overrides a stale inherited skip-download setting.
+    delete env.CHROMEDRIVER_SKIP_DOWNLOAD;
     if (driverText) {
       console.log("System ChromeDriver is not compatible with Chrome " + chromeVersion + "; installing the benchmark-pinned driver.");
     } else {
-      console.log("No system ChromeDriver found; the benchmark dependency setup will install its required driver.");
+      console.log("No compatible system ChromeDriver found; the benchmark dependency setup will install its required driver.");
     }
   }
 
