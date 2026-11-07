@@ -180,11 +180,13 @@ async function main() {
     );
   }
 
+  const chromeBinary = ensureChrome(waterveinDir);
+
+  console.log("Checking js-framework-benchmark dependencies...");
+  ensureBenchmarkDependencies();
+
   console.log("Building Watervein packages...");
   run("pnpm", ["build"], { cwd: waterveinDir });
-
-  console.log("Preparing js-framework-benchmark dependencies...");
-  ensureBenchmarkDependencies();
 
   console.log("Compiling the benchmark runner...");
   run(npmCommand(), ["run", "compile-webdriver-ts"], { cwd: BENCHMARK_DIR });
@@ -200,7 +202,6 @@ async function main() {
   console.log("Building the Watervein benchmark implementation...");
   await buildWaterveinFramework(waterveinDir);
 
-  const chromeBinary = ensureChrome(waterveinDir);
   await ensureServer();
 
   console.log("Running the full keyed framework benchmark...");
