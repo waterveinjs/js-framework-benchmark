@@ -189,6 +189,7 @@ async function main() {
   ensureBenchmarkDependencies();
 
   console.log("Building the comparison framework implementations...");
+  process.chdir(BENCHMARK_DIR);
   const { rebuildFrameworks } = await import(path.join(BENCHMARK_DIR, "cli", "rebuild-build-single.js"));
   const otherFrameworks = FRAMEWORKS.filter((framework) => framework !== "keyed/watervein");
   if (!rebuildFrameworks(otherFrameworks, true)) {
