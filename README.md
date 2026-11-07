@@ -610,7 +610,7 @@ The runner builds the current Watervein workspace, temporarily installs its
 packed packages into this repository's `frameworks/keyed/watervein`
 implementation, builds the other selected keyed implementations, runs the
 full comparison with Playwright, and generates the HTML report at
-`watervein/js-framework-benchmark/webdriver-ts-results/dist/index.html`.
+`js-framework-benchmark/webdriver-ts-results/dist/index.html`.
 The temporary Watervein package manifest changes are restored after the
 build. The report records the actual local browser, CPU, memory, OS, and
 runner metadata. The benchmark server is started automatically and remains
