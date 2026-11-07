@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, readdirSync, existsSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -181,6 +181,7 @@ function installNpmDependencies(directory, label, env = process.env) {
 
   console.log("Installing " + label + " dependencies (normal lifecycle scripts enabled)...");
   run(npmCommand(), args, { cwd: directory, env });
+  mkdirSync(path.dirname(markerPath), { recursive: true });
   writeFileSync(markerPath, fingerprint);
 }
 
@@ -203,6 +204,7 @@ function ensureWaterveinDependencies(waterveinDir) {
 
   console.log("Installing Watervein workspace dependencies...");
   run("pnpm", ["install", "--frozen-lockfile", "--prefer-offline"], { cwd: waterveinDir });
+  mkdirSync(path.dirname(markerPath), { recursive: true });
   writeFileSync(markerPath, fingerprint);
 }
 
@@ -245,6 +247,7 @@ function ensureBenchmarkDependencies(chromeVersion, chromeBinary) {
   // whose peer range stops at ESLint 9. Keep the declared versions unchanged.
   run(npmCommand(), ["ci", "--no-audit", "--no-fund", "--legacy-peer-deps"], { cwd: BENCHMARK_DIR, env });
   run(npmCommand(), ["run", "install-local"], { cwd: BENCHMARK_DIR, env });
+  mkdirSync(path.dirname(markerPath), { recursive: true });
   writeFileSync(markerPath, fingerprint);
   return true;
 }
