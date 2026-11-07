@@ -227,6 +227,7 @@ function ensureBenchmarkDependencies(chromeVersion, chromeBinary) {
     .update(env.PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD)
     .update(env.CHROMEDRIVER_SKIP_DOWNLOAD || "download-driver")
     .update(env.DETECT_CHROMEDRIVER_VERSION || "pinned-driver")
+    .update("legacy-peer-deps")
     .update(driverText)
     .digest("hex");
   const markerPath = path.join(BENCHMARK_DIR, "node_modules", ".jsfb-dependency-setup-state");
@@ -240,7 +241,9 @@ function ensureBenchmarkDependencies(chromeVersion, chromeBinary) {
   // server dependencies. Only redundant browser/driver binary downloads are
   // skipped; package lifecycle scripts remain enabled.
   console.log("Installing benchmark dependencies with the standard npm setup...");
-  run(npmCommand(), ["ci", "--no-audit", "--no-fund"], { cwd: BENCHMARK_DIR, env });
+  // The benchmark currently declares ESLint 10 alongside a React plugin
+  // whose peer range stops at ESLint 9. Keep the declared versions unchanged.
+  run(npmCommand(), ["ci", "--no-audit", "--no-fund", "--legacy-peer-deps"], { cwd: BENCHMARK_DIR, env });
   run(npmCommand(), ["run", "install-local"], { cwd: BENCHMARK_DIR, env });
   writeFileSync(markerPath, fingerprint);
   return true;
