@@ -585,6 +585,32 @@ This work is derived from a benchmark that Richard Ayotte published on https://g
 
 Thanks to Baptiste Augrain for making the benchmarks more sophisticated and adding frameworks.
 
+
+## Running the Watervein benchmark from the Watervein repository
+
+The Watervein repository exposes a `pnpm jsfb` command. Clone this repository
+beside the Watervein checkout, then run the command from the root of
+`waterveinjs/watervein`:
+
+```sh
+pnpm jsfb
+```
+
+The runner builds the current Watervein workspace, temporarily installs its
+packed packages into this repository's `frameworks/keyed/watervein`
+implementation, builds the other selected keyed implementations, runs the
+full comparison with Playwright and Chrome for Testing 150.0.7871.46, and
+generates the HTML report at
+`webdriver-ts-results/dist/index.html`. The temporary Watervein package
+manifest changes are restored after the build.
+
+On Linux x64, Chrome for Testing is downloaded to the user's cache on the
+first run. On other platforms, set `CHROME_BINARY` to a Chrome for Testing
+150.0.7871.46 executable before running the command. The benchmark server
+is started automatically and remains available at
+`http://127.0.0.1:8080`.
+
+
 # History
 
 Frameworks without significant activity on github or npm for more than a year will be removed (_automatic commits like dependabot and minor updates, like docs editions, are ignored_).
