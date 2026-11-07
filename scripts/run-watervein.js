@@ -222,7 +222,17 @@ async function main() {
   );
 
   console.log("Generating the HTML comparison report...");
-  run(npmCommand(), ["run", "results"], { cwd: BENCHMARK_DIR });
+  const cpuModel = os.cpus()[0]?.model ?? "Unknown CPU";
+  const memoryGb = (os.totalmem() / 1024 ** 3).toFixed(1);
+  const reportEnvironment = {
+    ...process.env,
+    VITE_BENCHMARK_BROWSER: "Chrome " + CHROME_VERSION,
+    VITE_BENCHMARK_ARCH: process.arch,
+    VITE_BENCHMARK_HARDWARE: cpuModel + ", " + os.cpus().length + " logical CPUs, " + memoryGb + " GB RAM",
+    VITE_BENCHMARK_OS: os.type() + " " + os.release(),
+    VITE_BENCHMARK_RUNNER: "Playwright",
+  };
+  run(npmCommand(), ["run", "results"], { cwd: BENCHMARK_DIR, env: reportEnvironment });
 
   const reportPath = path.join(BENCHMARK_DIR, "webdriver-ts-results", "dist", "index.html");
   console.log("\nBenchmark completed. HTML report: " + reportPath);
