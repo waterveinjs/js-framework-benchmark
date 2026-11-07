@@ -84,13 +84,15 @@ function getChromeDriverInstallEnvironment(chromeVersion, chromeBinary) {
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1",
   };
 
-  // Make explicitly configured local binaries discoverable by npm lifecycle
-  // scripts as well as by the benchmark runner.
+  // Keep the active Node.js/npm installation ahead of directories added for
+  // explicitly configured browser binaries. Prepending /usr/bin (for example,
+  // when Chrome is installed there) would otherwise select the system npm and
+  // its potentially older Node.js runtime.
   const binaryDirectories = [chromeBinary, process.env.CHROMEDRIVER_BINARY]
     .filter((binary) => binary && (path.isAbsolute(binary) || binary.includes("/") || binary.includes("\\")))
     .map((binary) => path.dirname(path.resolve(process.cwd(), binary)));
   if (binaryDirectories.length > 0) {
-    env.PATH = [...new Set([...binaryDirectories, env.PATH || ""])].filter(Boolean).join(path.delimiter);
+    env.PATH = [...new Set([env.PATH || "", ...binaryDirectories])].filter(Boolean).join(path.delimiter);
   }
 
   const driverBinary = process.env.CHROMEDRIVER_BINARY ||
