@@ -86,6 +86,7 @@ async function ensureServer() {
     detached: true,
     stdio: "ignore",
     windowsHide: true,
+    shell: process.platform === "win32",
   });
   child.unref();
 
