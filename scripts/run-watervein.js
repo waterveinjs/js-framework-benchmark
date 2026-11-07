@@ -128,7 +128,7 @@ function installNpmDependencies(directory, label, { ignoreScripts = false } = {}
 
   console.log("Installing " + label + " dependencies...");
   run(npmCommand(), args, { cwd: directory });
-  writeFileSync(markerPath, fingerprint + "\\n");
+  writeFileSync(markerPath, fingerprint);
 }
 
 function ensureWaterveinDependencies(waterveinDir) {
@@ -150,7 +150,7 @@ function ensureWaterveinDependencies(waterveinDir) {
 
   console.log("Installing Watervein workspace dependencies...");
   run("pnpm", ["install", "--frozen-lockfile", "--prefer-offline"], { cwd: waterveinDir });
-  writeFileSync(markerPath, fingerprint + "\\n");
+  writeFileSync(markerPath, fingerprint);
 }
 
 function ensureBenchmarkDependencies() {
