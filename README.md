@@ -588,27 +588,33 @@ Thanks to Baptiste Augrain for making the benchmarks more sophisticated and addi
 
 ## Running the Watervein benchmark from the Watervein repository
 
-The Watervein repository exposes a `pnpm jsfb` command. Clone this repository
-beside the Watervein checkout, then run the command from the root of
-`waterveinjs/watervein`:
+The Watervein repository exposes a `pnpm jsfb` command. From the root of
+`waterveinjs/watervein`, run:
 
 ```sh
 pnpm jsfb
 ```
 
+On the first run, Watervein clones this repository into
+`watervein/js-framework-benchmark`. The directory is ignored by Watervein's
+Git configuration. If the directory already exists, the setup script leaves it
+untouched and does not clone again.
+
+Before running the benchmark, install this repository's dependencies once:
+run `npm ci` at the repository root, then `npm run install-local`. The
+runner expects Chrome for Testing 150.0.7871.46 to be installed and
+available on `PATH`; alternatively, set `CHROME_BINARY` to its executable
+path. The runner does not download Chrome or install npm dependencies.
+
 The runner builds the current Watervein workspace, temporarily installs its
 packed packages into this repository's `frameworks/keyed/watervein`
 implementation, builds the other selected keyed implementations, runs the
-full comparison with Playwright and Chrome for Testing 150.0.7871.46, and
-generates the HTML report at
-`webdriver-ts-results/dist/index.html`. The temporary Watervein package
-manifest changes are restored after the build. The generated report receives the actual local browser, CPU, memory, OS, and runner metadata instead of the repository's old hard-coded sample machine.
-
-On Linux x64, Chrome for Testing is downloaded to the user's cache on the
-first run. On other platforms, set `CHROME_BINARY` to a Chrome for Testing
-150.0.7871.46 executable before running the command. The benchmark server
-is started automatically and remains available at
-`http://127.0.0.1:8080`.
+full comparison with Playwright, and generates the HTML report at
+`watervein/js-framework-benchmark/webdriver-ts-results/dist/index.html`.
+The temporary Watervein package manifest changes are restored after the
+build. The report records the actual local browser, CPU, memory, OS, and
+runner metadata. The benchmark server is started automatically and remains
+available at `http://127.0.0.1:8080`.
 
 
 # History
