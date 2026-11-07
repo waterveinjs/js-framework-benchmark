@@ -25,7 +25,8 @@
     "rebuild-ci": "node cli.js rebuild-single --ci -f",
     "zip": "node cli.js zip",
     "format": "prettier . \"!(broken-frameworks|frameworks)/**/*\" -w",
-    "lint": "eslint webdriver-ts webdriver-ts-results cli server"
+    "lint": "eslint webdriver-ts webdriver-ts-results cli server",
+    "test:watervein-chrome": "node --test scripts/resolve-executable.test.js"
   },
   "keywords": [
     "benchmark",
