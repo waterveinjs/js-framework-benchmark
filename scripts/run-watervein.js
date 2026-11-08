@@ -301,6 +301,14 @@ async function buildWaterveinFramework(waterveinDir) {
   const frameworkDir = path.join(BENCHMARK_DIR, "frameworks", "keyed", "watervein");
   const manifestPath = path.join(frameworkDir, "package.json");
   const originalManifest = readFileSync(manifestPath, "utf8");
+  let restored = false;
+
+  const restore = () => {
+    if (restored) return;
+    restored = true;
+    writeFileSync(manifestPath, originalManifest);
+    rmSync(packDir, { recursive: true, force: true });
+  };
 
   try {
     const coreManifest = JSON.parse(
@@ -338,9 +346,13 @@ async function buildWaterveinFramework(waterveinDir) {
       cwd: frameworkDir,
     });
     run(npm, ["run", "build-prod"], { cwd: frameworkDir });
-  } finally {
-    writeFileSync(manifestPath, originalManifest);
-    rmSync(packDir, { recursive: true, force: true });
+
+    // Keep the versioned manifest in place while the benchmark and report
+    // generator read framework metadata. Restore it only after the full run.
+    return restore;
+  } catch (error) {
+    restore();
+    throw error;
   }
 }
 
@@ -380,45 +392,49 @@ async function main() {
   buildComparisonFrameworks();
 
   console.log("Building the Watervein benchmark implementation...");
-  await buildWaterveinFramework(waterveinDir);
+  const restoreWaterveinFramework = await buildWaterveinFramework(waterveinDir);
 
-  await ensureServer();
+  try {
+    await ensureServer();
 
-  console.log("Running the full keyed framework benchmark...");
-  run(
-    npmCommand(),
-    [
-      "run",
-      "bench",
-      "--",
-      "--runner",
-      "playwright",
-      "--headless",
-      "false",
-      "--chromeBinary",
-      chrome.binary,
-      ...FRAMEWORKS,
-      ...process.argv.slice(2),
-    ],
-    { cwd: BENCHMARK_DIR },
-  );
+    console.log("Running the full keyed framework benchmark...");
+    run(
+      npmCommand(),
+      [
+        "run",
+        "bench",
+        "--",
+        "--runner",
+        "playwright",
+        "--headless",
+        "false",
+        "--chromeBinary",
+        chrome.binary,
+        ...FRAMEWORKS,
+        ...process.argv.slice(2),
+      ],
+      { cwd: BENCHMARK_DIR },
+    );
 
-  console.log("Generating the HTML comparison report...");
-  const cpuModel = os.cpus()[0]?.model ?? "Unknown CPU";
-  const memoryGb = (os.totalmem() / 1024 ** 3).toFixed(1);
-  const reportEnvironment = {
-    ...process.env,
-    VITE_BENCHMARK_BROWSER: "Chrome " + chrome.version,
-    VITE_BENCHMARK_ARCH: process.arch,
-    VITE_BENCHMARK_HARDWARE: cpuModel + ", " + os.cpus().length + " logical CPUs, " + memoryGb + " GB RAM",
-    VITE_BENCHMARK_OS: os.type() + " " + os.release(),
-    VITE_BENCHMARK_RUNNER: "Playwright",
-  };
-  run(npmCommand(), ["run", "results"], { cwd: BENCHMARK_DIR, env: reportEnvironment });
+    console.log("Generating the HTML comparison report...");
+    const cpuModel = os.cpus()[0]?.model ?? "Unknown CPU";
+    const memoryGb = (os.totalmem() / 1024 ** 3).toFixed(1);
+    const reportEnvironment = {
+      ...process.env,
+      VITE_BENCHMARK_BROWSER: "Chrome " + chrome.version,
+      VITE_BENCHMARK_ARCH: process.arch,
+      VITE_BENCHMARK_HARDWARE: cpuModel + ", " + os.cpus().length + " logical CPUs, " + memoryGb + " GB RAM",
+      VITE_BENCHMARK_OS: os.type() + " " + os.release(),
+      VITE_BENCHMARK_RUNNER: "Playwright",
+    };
+    run(npmCommand(), ["run", "results"], { cwd: BENCHMARK_DIR, env: reportEnvironment });
 
-  const reportPath = path.join(BENCHMARK_DIR, "webdriver-ts-results", "dist", "index.html");
-  console.log("\nBenchmark completed. HTML report: " + reportPath);
-  console.log("The benchmark server remains available at http://127.0.0.1:8080.");
+    const reportPath = path.join(BENCHMARK_DIR, "webdriver-ts-results", "dist", "index.html");
+    console.log("\nBenchmark completed. HTML report: " + reportPath);
+    console.log("The benchmark server remains available at http://127.0.0.1:8080.");
+  } finally {
+    restoreWaterveinFramework();
+  }
 }
 
 main().catch((error) => {
